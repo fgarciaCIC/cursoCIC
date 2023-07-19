@@ -1,0 +1,160 @@
+import java.util.ArrayList;
+import java.util.List;
+
+// Declaración de la clase de la Entidad Alumno
+// --------------------------------------------
+public class Alumno {
+
+// Propiedades de la clase 
+    private int id;
+    private String nombre;
+    private String apellidos;
+
+    public Alumno(int id, String nombre, String apellidos) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellidos= apellidos;
+    }
+
+    // Get y Set de propiedades
+    public int getId() {
+        return id;
+    }
+    public String getNombre() {
+        return nombre;
+    }
+    public int getApellidos() {
+        return apellidos;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    public void setApellidos(int apellidos) {
+        this.apellidos = apellidos;
+    }
+}
+
+
+// Declaración de la clase del CRUD
+// ---------------------------------
+
+import Alumno;
+public class AlumnoCRUD {
+
+    private List<Alumno> alumnos;
+
+    public AlumnoCRUD() {
+        alumnos = new ArrayList<>();
+    }
+
+   // Lista del CRUD
+   public List<Alumno> listarAlumnos() {
+        return alumnos;
+    }
+
+   
+    // Crar un Alumno   
+    public void crearAlumno(Alumno alumno) {
+        alumnos.add(alumno);
+    }
+
+    // Obtener un Alumno
+    public Alumno obtenerAlumno(int id) {
+        for (Alumno alumno : alumnos) {
+            if (alumno.getId() == id) {
+                return alumno;
+            }
+        }
+        return null; // En caso de que no 
+    }
+ 
+    // Actualizar un Alumno
+    public void actualizarAlumno(Alumno alumno) {
+        for (int i = 0; i < alumnos.size(); i++) {
+            if (alumnos.get(i).getId() == alumno.getId()) {
+                alumnos.set(i, alumno);
+                return;
+            }
+        }        
+    }
+
+    // Eliminar un Alumno
+    public void eliminarAlumno(int id) {
+        for (int i = 0; i < alumnos.size(); i++) {
+            if (alumnos.get(i).getId() == id) {
+                alumnos.remove(i);
+                return;
+            }
+        }       
+    }
+
+}
+
+
+
+
+// Test
+
+public class AlumnoCRUDTest {
+    private AlumnoCRUD alumnoCRUD;
+
+    @BeforeEach
+    public void setUp() {
+        alumnoCRUD = new AlumnoCRUD();
+    }
+
+    @Test
+    public void testListarAlumnos() {
+        Alumno alumno1 = new Alumno(1, "Juan", "García");
+        Alumno alumno2 = new Alumno(2, "María", "González");
+        alumnoCRUD.crearAlumno(alumno1);
+        alumnoCRUD.crearAlumno(alumno2);
+
+        List<Alumno> alumnos = alumnoCRUD.listarAlumnos();
+        assertEquals(2, alumnos.size());
+        assertEquals(alumno1.getNombre(), alumnos.get(0).getNombre());
+        assertEquals(alumno2.getNombre(), alumnos.get(1).getNombre());
+    }
+
+    @Test
+    public void testCrearAlumno() {
+        Alumno alumno = new Alumno(1, "Mario", "García");
+        alumnoCRUD.crearAlumno(alumno);
+
+        Alumno alumnoObtenido = alumnoCRUD.obtenerAlumno(1);
+        assertNotNull(alumnoObtenido);
+        assertEquals(alumno.getNombre(), alumnoObtenido.getNombre());
+        assertEquals(alumno.getApellidos(), alumnoObtenido.getApellidos());
+    }
+
+    @Test
+    public void testActualizarAlumno() {
+        Alumno alumno = new Alumno(1, "Lucas", "Pérez");
+        alumnoCRUD.crearAlumno(alumno);
+
+        alumno.setNombre("Juan Carlos");
+        alumno.setApellidos("González");
+        alumnoCRUD.actualizarAlumno(alumno);
+
+        Alumno alumnoObtenido = alumnoCRUD.obtenerAlumno(1);
+        assertNotNull(alumnoObtenido);
+        assertEquals(alumno.getNombre(), alumnoObtenido.getNombre());
+        assertEquals(alumno.getApellidos(), alumnoObtenido.getApellidos());
+    }
+
+    @Test
+    public void testEliminarAlumno() {
+        Alumno alumno = new Alumno(1, "Juan", "Pérez");
+        alumnoCRUD.crearAlumno(alumno);
+
+        alumnoCRUD.eliminarAlumno(1);
+
+        Alumno alumnoObtenido = alumnoCRUD.obtenerAlumno(1);
+        assertNull(alumnoObtenido);
+    }
+
+
+}
